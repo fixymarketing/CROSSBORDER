@@ -61,13 +61,13 @@
   });
 
   const services = [
-    { kicker:'BASE OPERATIVA', title:'FixyFull', description:'Fulfillment para recibir, almacenar y preparar tus pedidos localmente.', tags:['Stock','Picking','Packing'] },
-    { kicker:'VELOCIDAD', title:'Same Day', description:'Entregas en el día para operaciones que necesitan inmediatez dentro del alcance disponible.', tags:['En el día','Última milla','Seguimiento'] },
-    { kicker:'PREVISIBILIDAD', title:'Next Day', description:'Entregas en 24 horas para sostener una promesa clara hacia tus clientes.', tags:['24 horas','Distribución','Trazabilidad'] },
-    { kicker:'ALCANCE', title:'Envíos al Interior', description:'Distribución hacia diferentes puntos del país desde una operación centralizada.', tags:['Nacional','Domicilio','Sucursal'] },
-    { kicker:'FLEXIBILIDAD', title:'FixyPoints', description:'Red Pick Up / Drop Off para sumar alternativas de retiro y devolución.', tags:['Pick Up','Drop Off','Puntos'] },
-    { kicker:'COBRO EN LA ENTREGA', title:'FixyPay', description:'Cobro contra entrega mediante QR y efectivo, según disponibilidad del servicio.', tags:['QR','Efectivo','Conciliación'] },
-    { kicker:'CIRCUITO COMPLETO', title:'Logística inversa', description:'Gestión de devoluciones para recuperar productos y cerrar la experiencia de compra.', tags:['Devoluciones','Recupero','Seguimiento'] }
+    { kicker:'BASE OPERATIVA', title:'FixyFull', description:'Fulfillment para recibir, almacenar y preparar tus pedidos localmente.', tags:['Stock','Picking','Packing'], image:'media/images/servicios/fixy-full.webp', alt:'Depósito Fixy con zona FixyFull señalizada' },
+    { kicker:'VELOCIDAD', title:'Same Day', description:'Entregas en el día para operaciones que necesitan inmediatez dentro del alcance disponible.', tags:['En el día','Última milla','Seguimiento'], image:'media/images/servicios/fixy-same.webp', alt:'Preparación de envíos Same Day en Fixy' },
+    { kicker:'PREVISIBILIDAD', title:'Next Day', description:'Entregas en 24 horas para sostener una promesa clara hacia tus clientes.', tags:['24 horas','Distribución','Trazabilidad'], image:'media/images/servicios/fixy-next.webp', alt:'Pedidos listos para entregas Next Day' },
+    { kicker:'ALCANCE', title:'Envíos al Interior', description:'Distribución hacia diferentes puntos del país desde una operación centralizada.', tags:['Nacional','Domicilio','Sucursal'], image:'media/images/servicios/fixy-interior.webp', alt:'Envíos preparados para el interior del país' },
+    { kicker:'FLEXIBILIDAD', title:'FixyPoints', description:'Red Pick Up / Drop Off para sumar alternativas de retiro y devolución.', tags:['Pick Up','Drop Off','Puntos'], image:'media/images/servicios/fixy-point.webp', alt:'Depósito Fixy con red de FixyPoints' },
+    { kicker:'COBRO EN LA ENTREGA', title:'FixyPay', description:'Cobro contra entrega mediante QR y efectivo, según disponibilidad del servicio.', tags:['QR','Efectivo','Conciliación'], image:'media/images/servicios/fixy-pay.webp', alt:'Cobro contra entrega con FixyPay' },
+    { kicker:'CIRCUITO COMPLETO', title:'Logística inversa', description:'Gestión de devoluciones para recuperar productos y cerrar la experiencia de compra.', tags:['Devoluciones','Recupero','Seguimiento'], image:'media/images/servicios/fixy-inversa.webp', alt:'Gestión de devoluciones y logística inversa en Fixy' }
   ];
   const serviceButtons = $$('[data-service]');
   const panel = $('#service-panel');
@@ -83,6 +83,22 @@
     $('h3', panel).textContent = service.title;
     $('.service-description', panel).textContent = service.description;
     $('.service-tags', panel).innerHTML = service.tags.map(tag => `<span>${tag}</span>`).join('');
+    const media = $('[data-service-media]', panel);
+    const symbol = $('[data-service-symbol]', panel);
+    if (media && symbol) {
+      const image = $('img', media);
+      if (service.image) {
+        if (image && image.getAttribute('src') !== service.image) {
+          image.src = service.image;
+          image.alt = service.alt || service.title;
+        }
+        media.hidden = false;
+        symbol.hidden = true;
+      } else {
+        media.hidden = true;
+        symbol.hidden = false;
+      }
+    }
     panel.animate?.([{ opacity:.35, transform:'translateY(8px)' }, { opacity:1, transform:'none' }], { duration:260, easing:'ease-out' });
   };
   serviceButtons.forEach((button, index) => {
