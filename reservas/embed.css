@@ -24,3 +24,216 @@
 
 @media(max-width:980px){.booking-embed{width:min(100%,700px);min-height:auto}.booking-embed .success,.booking-embed .closed{min-height:560px}}
 @media(max-width:640px){.booking-embed{border-radius:24px}.booking-embed .panel,.booking-embed .success,.booking-embed .closed{padding:34px 20px}.booking-embed .dates{gap:6px}.booking-embed .times{grid-template-columns:repeat(2,1fr)}.booking-embed form{grid-template-columns:1fr}.booking-embed .mini-summary,.booking-embed form .primary{grid-column:1}.booking-embed .mini-summary{flex-direction:column}.booking-embed .service,.booking-embed .modality{padding:15px}.booking-embed .service b,.booking-embed .modality b{display:none}}
+
+
+/* ============================================================
+   MODALIDAD — rediseño visual (SOLO estilos, app.js sin tocar)
+   Tarjeta rectangular con DOS esquinas mordidas. La flecha y el
+   chip se apoyan dentro de esos huecos; el borde de la tarjeta
+   remata en curva cóncava en las cuatro puntas de las muescas.
+     1) .modality-icon    -> tile de la flecha
+     2) span:nth-child(2) -> cuerpo + remates de la muesca superior
+     3) b                 -> tile de ejecutivos + sus dos remates
+   ============================================================ */
+.booking-embed{
+  --mod-black:#101014;--mod-light:#F3F3F2;
+  --mod-panel:#fff;  /* fondo del panel = color de la separación */
+  --mod-r:26px;      /* radio exterior de la tarjeta */
+  --mod-r2:15px;     /* radio interior de los tiles  */
+  --mod-g:6px;       /* ancho de la separación */
+  --mod-f:13px;      /* radio del remate cóncavo */
+  --mod-ah:54px;--mod-aw:66px;--mod-ch:52px;
+}
+
+.booking-embed .option-list:has(.modality){gap:22px}
+
+/* --- contenedor: posiciona y recorta la separación al rectángulo --- */
+.booking-embed .modality,
+.booking-embed .modality.presencial,
+.booking-embed .modality:hover,
+.booking-embed .modality.presencial:hover,
+.booking-embed .modality.selected{
+  position:relative;display:block;
+  width:100%;padding:0;border:0;border-radius:var(--mod-r);
+  background:var(--mod-fill);box-shadow:none;overflow:hidden;text-align:left;
+  transition:transform .22s ease,background .25s ease;
+}
+.booking-embed .modality:hover{transform:translateY(-3px)}
+.booking-embed .modality:active{transform:translateY(-1px)}
+
+/* --- color compartido por las 3 piezas --- */
+.booking-embed .modality .modality-icon,
+.booking-embed .modality span:nth-child(2),
+.booking-embed .modality b,
+.booking-embed .modality.presencial .modality-icon,
+.booking-embed .modality.presencial span:nth-child(2),
+.booking-embed .modality.presencial b{
+  background:transparent;color:var(--mod-fg);
+}
+
+/* --- cuerpo --- */
+.booking-embed .modality span:nth-child(2){
+  position:relative;display:flex;flex:none;flex-direction:column;gap:10px;
+  border-radius:var(--mod-r);
+  padding:calc(var(--mod-ah) + var(--mod-g) + 20px) 28px
+          calc(var(--mod-ch) + var(--mod-g) + 16px) 28px;
+}
+/* remates cóncavos de la muesca de la flecha (2 cuartos de círculo) */
+.booking-embed .modality span:nth-child(2)::before{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background-repeat:no-repeat;
+  background-size:var(--mod-f) var(--mod-f),var(--mod-f) var(--mod-f);
+}
+.booking-embed .modality strong{
+  font-size:clamp(1.5rem,3.4vw,2rem);font-weight:800;line-height:1.02;
+  letter-spacing:-.03em;text-transform:uppercase;
+}
+.booking-embed .modality small{font-size:.82rem;line-height:1.45;max-width:34ch}
+
+/* --- tiles: al ras de los bordes, con anillo separador --- */
+.booking-embed .modality .modality-icon,
+.booking-embed .modality b{
+  position:absolute;z-index:2;
+  box-shadow:0 0 0 var(--mod-g) var(--mod-panel);
+}
+.booking-embed .modality .modality-icon{
+  display:grid;place-items:center;
+  width:var(--mod-aw);height:var(--mod-ah);
+  font-size:0!important;line-height:0;
+}
+.booking-embed .modality .modality-icon::after{font-size:1.2rem;line-height:1;font-weight:700}
+.booking-embed .modality b{
+  display:flex;align-items:center;width:max-content;
+  height:var(--mod-ch);padding:0 22px;
+  font-size:.72rem;font-weight:800;letter-spacing:.01em;white-space:nowrap;
+}
+/* remates cóncavos de la muesca del chip (se posicionan solos, sin saber su ancho) */
+.booking-embed .modality b::before,
+.booking-embed .modality b::after{
+  content:'';position:absolute;z-index:2;
+  width:var(--mod-f);height:var(--mod-f);
+}
+
+/* ---------- ARRIBA · VIRTUAL (claro #F3F3F2) ---------- */
+/* Para volver a la versión clara: --mod-fill:var(--mod-light) y --mod-fg:var(--night) */
+.booking-embed .modality[data-modality="virtual"]{
+  --mod-fg:#fff;
+  --mod-fill:radial-gradient(135% 155% at 0% 50%,
+              rgba(8,17,26,.90) 0%,rgba(8,17,26,.40) 36%,rgba(8,17,26,0) 64%),
+             var(--blue);
+}
+.booking-embed .modality[data-modality="virtual"]:hover{
+  --mod-fill:radial-gradient(135% 155% at 0% 50%,
+              rgba(8,17,26,.84) 0%,rgba(8,17,26,.34) 36%,rgba(8,17,26,0) 64%),
+             #0b9cd4;
+}
+.booking-embed .modality[data-modality="virtual"] strong{color:#fff}
+.booking-embed .modality[data-modality="virtual"] small{color:rgba(255,255,255,.78)}
+.booking-embed .modality[data-modality="virtual"] .modality-icon::after{content:'\2197'}
+/* flecha arriba-derecha */
+.booking-embed .modality[data-modality="virtual"] .modality-icon{
+  top:0;right:0;
+  border-radius:0 var(--mod-r) 0 var(--mod-r2);
+}
+.booking-embed .modality[data-modality="virtual"] span:nth-child(2)::before{
+  background-image:
+    radial-gradient(circle at bottom left,transparent var(--mod-f),var(--mod-panel) calc(var(--mod-f) + .5px)),
+    radial-gradient(circle at bottom left,transparent var(--mod-f),var(--mod-panel) calc(var(--mod-f) + .5px));
+  background-position:
+    right calc(var(--mod-aw) + var(--mod-g)) top 0,
+    right 0 top calc(var(--mod-ah) + var(--mod-g));
+}
+/* chip abajo-izquierda */
+.booking-embed .modality[data-modality="virtual"] b{
+  bottom:0;left:0;
+  border-radius:0 var(--mod-r2) 0 var(--mod-r);
+}
+.booking-embed .modality[data-modality="virtual"] b::before{
+  left:calc(100% + var(--mod-g));bottom:0;
+  background:radial-gradient(circle at top right,transparent var(--mod-f),var(--mod-panel) calc(var(--mod-f) + .5px));
+}
+.booking-embed .modality[data-modality="virtual"] b::after{
+  left:0;bottom:calc(100% + var(--mod-g));
+  background:radial-gradient(circle at top right,transparent var(--mod-f),var(--mod-panel) calc(var(--mod-f) + .5px));
+}
+.booking-embed .modality[data-modality="virtual"].selected{
+  transform:none;outline:3px solid var(--blue);outline-offset:6px;
+}
+
+/* ---------- ABAJO · PRESENCIAL (negro) — todo espejado ---------- */
+/* degradado: resplandor del azul de marca entrando desde el borde derecho */
+.booking-embed .modality.presencial{
+  --mod-fg:#fff;
+  --mod-fill:radial-gradient(135% 155% at 100% 50%,
+              rgba(0,143,195,.50) 0%,rgba(0,143,195,.13) 38%,rgba(0,143,195,0) 62%),
+             var(--mod-black);
+}
+.booking-embed .modality.presencial:hover{
+  --mod-fill:radial-gradient(135% 155% at 100% 50%,
+              rgba(0,143,195,.62) 0%,rgba(0,143,195,.18) 38%,rgba(0,143,195,0) 62%),
+             #16161c;
+}
+.booking-embed .modality.presencial strong{color:#fff}
+.booking-embed .modality.presencial small{color:rgba(255,255,255,.62)}
+.booking-embed .modality.presencial .modality-icon::after{content:'\2196'}
+/* logo Feria EFFIX 2026, esquina superior derecha.
+   El arte original es negro sobre transparente: se usa como máscara
+   y se pinta en blanco para que lea sobre el fondo negro. */
+@supports ((mask-image:url('')) or (-webkit-mask-image:url(''))){
+  .booking-embed .modality.presencial::after{
+    content:'';position:absolute;z-index:3;pointer-events:none;
+    top:20px;right:26px;height:44px;aspect-ratio:594/120;
+    background:#fff;
+    -webkit-mask:url('../media/images/img-logo-feria-effix-2026-2.webp') no-repeat center/contain;
+            mask:url('../media/images/img-logo-feria-effix-2026-2.webp') no-repeat center/contain;
+  }
+}
+/* flecha arriba-izquierda */
+.booking-embed .modality.presencial .modality-icon{
+  top:0;left:0;right:auto;
+  border-radius:var(--mod-r) 0 var(--mod-r2) 0;
+}
+.booking-embed .modality.presencial span:nth-child(2)::before{
+  background-image:
+    radial-gradient(circle at bottom right,transparent var(--mod-f),var(--mod-panel) calc(var(--mod-f) + .5px)),
+    radial-gradient(circle at bottom right,transparent var(--mod-f),var(--mod-panel) calc(var(--mod-f) + .5px));
+  background-position:
+    left calc(var(--mod-aw) + var(--mod-g)) top 0,
+    left 0 top calc(var(--mod-ah) + var(--mod-g));
+}
+/* chip abajo-derecha */
+.booking-embed .modality.presencial b{
+  bottom:0;right:0;left:auto;
+  border-radius:var(--mod-r2) 0 var(--mod-r) 0;
+}
+.booking-embed .modality.presencial b::before{
+  right:calc(100% + var(--mod-g));left:auto;bottom:0;
+  background:radial-gradient(circle at top left,transparent var(--mod-f),var(--mod-panel) calc(var(--mod-f) + .5px));
+}
+.booking-embed .modality.presencial b::after{
+  right:0;left:auto;bottom:calc(100% + var(--mod-g));
+  background:radial-gradient(circle at top left,transparent var(--mod-f),var(--mod-panel) calc(var(--mod-f) + .5px));
+}
+.booking-embed .modality.presencial.selected{
+  transform:none;outline:3px solid var(--yellow);outline-offset:6px;
+}
+
+/* ---------- MOBILE ---------- */
+@media(max-width:640px){
+  .booking-embed{
+    --mod-r:20px;--mod-r2:12px;--mod-g:5px;--mod-f:10px;
+    --mod-ah:46px;--mod-aw:56px;--mod-ch:44px;
+  }
+  .booking-embed .option-list:has(.modality){gap:18px}
+  .booking-embed .modality .modality-icon::after{font-size:1.05rem}
+  .booking-embed .modality span:nth-child(2){
+    padding:calc(var(--mod-ah) + var(--mod-g) + 16px) 20px
+            calc(var(--mod-ch) + var(--mod-g) + 14px) 20px;
+  }
+  .booking-embed .modality.presencial::after{top:14px;right:18px;height:30px}
+  .booking-embed .modality strong{font-size:1.35rem}
+  .booking-embed .modality small{font-size:.8rem;max-width:none}
+  /* se anula el display:none heredado del breakpoint original */
+  .booking-embed .modality b{display:flex!important;padding:0 18px;font-size:.68rem}
+  .booking-embed .modality:hover{transform:none}
+}
