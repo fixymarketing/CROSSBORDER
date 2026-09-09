@@ -14,9 +14,9 @@ function apiBase(value) {
 
 const API = apiBase(runtime.apiBase);
 const services = [
-  { id: 'diagnostico', title: 'Diagnóstico logístico', detail: 'Revisamos tu operación y detectamos el mejor punto de partida.', duration: 15 },
-  { id: 'fulfillment', title: 'FixyFull', detail: 'Stock, preparación y despacho para tu e-commerce.', duration: 15 },
-  { id: 'envios', title: 'Envíos y distribución', detail: 'Same Day, Next Day, Flex e interior.', duration: 15 },
+  { id: 'evaluate', title: 'Estoy evaluando Argentina', detail: 'Quiero entender la viabilidad y los próximos pasos.', duration: 15 },
+  { id: 'launch', title: 'Quiero montar una operación local', detail: 'Necesito almacenamiento, preparación, distribución e integraciones.', duration: 15 },
+  { id: 'scale', title: 'Ya opero y quiero escalar', detail: 'Busco mejorar costos, capacidad o nivel de servicio.', duration: 15 },
 ];
 const advisors = {
   gonzalo: {
@@ -74,7 +74,7 @@ function safeMeetUrl(value) {
 let state = {
   view: 'modality',
   modality: '',
-  service: 'diagnostico',
+  service: 'evaluate',
   date: virtualDateKeys()[0] ?? '',
   slot: null,
   advisor: '',
@@ -132,7 +132,7 @@ function modalityView() {
 }
 
 function serviceView() {
-  return `<div class="panel"><button class="back" data-view="modality">← Cambiar modalidad</button><span class="step-label">PASO 2 DE 5</span><h2>¿Sobre qué querés conversar?</h2><p class="sub">Seleccioná el punto de partida.</p><div class="option-list">${services.map(serviceCard).join('')}</div><button class="primary" data-view="schedule">Elegir día y horario →</button></div>`;
+  return `<div class="panel"><button class="back" data-view="modality">← Cambiar modalidad</button><span class="step-label">PASO 2 DE 5</span><h2>¿En qué etapa está tu marca?</h2><p class="sub">No necesitás saber qué servicio elegir; lo definimos juntos en la reunión.</p><div class="option-list">${services.map(serviceCard).join('')}</div><button class="primary" data-view="schedule">Elegir día y horario →</button></div>`;
 }
 
 function dateButton(key) {
@@ -201,7 +201,7 @@ function successView() {
   const message = state.modality === 'in_person'
     ? 'La invitación de Google Calendar con el punto de encuentro fue enviada por email.'
     : 'La invitación de Google Calendar con el Meet fue enviada por email.';
-  return `<div class="success"><div class="success-icon">✓</div><span class="eyebrow">REUNIÓN CONFIRMADA</span><h2>¡Tu reunión quedó agendada!</h2><p>${message}</p><div class="confirmed-advisor"><img src="${advisor.image}" alt="${advisor.name}" referrerpolicy="no-referrer"><span><small>Tu ejecutivo</small><strong>${advisor.name}</strong></span></div><div class="summary details"><div><span>Servicio</span><strong>${service.title}</strong></div><div><span>Fecha</span><strong>${confirmedDate.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', timeZone })}</strong></div><div><span>Horario</span><strong>${confirmedDate.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone })}</strong></div><div><span>Duración</span><strong>15 minutos</strong></div></div>${meetLink ? `<a class="primary" href="${meetLink}" rel="noreferrer">Abrir Google Meet</a>` : ''}${state.modality === 'in_person' ? '<div class="location-result"><strong>Fixy · Stand AM74</strong><br>Plaza Mayor Medellín · Pabellón Amarillo</div>' : ''}</div>`;
+  return `<div class="success"><div class="success-icon">✓</div><span class="eyebrow">REUNIÓN CONFIRMADA</span><h2>¡Tu reunión quedó agendada!</h2><p>${message}</p><div class="confirmed-advisor"><img src="${advisor.image}" alt="${advisor.name}" referrerpolicy="no-referrer"><span><small>Tu ejecutivo</small><strong>${advisor.name}</strong></span></div><div class="summary details"><div><span>${state.modality === 'virtual' ? 'Etapa' : 'Encuentro'}</span><strong>${service.title}</strong></div><div><span>Fecha</span><strong>${confirmedDate.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', timeZone })}</strong></div><div><span>Horario</span><strong>${confirmedDate.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone })}</strong></div><div><span>Duración</span><strong>15 minutos</strong></div></div>${meetLink ? `<a class="primary" href="${meetLink}" rel="noreferrer">Abrir Google Meet</a>` : ''}${state.modality === 'in_person' ? '<div class="location-result"><strong>Fixy · Stand AM74</strong><br>Plaza Mayor Medellín · Pabellón Amarillo</div>' : ''}</div>`;
 }
 
 function closedView() {
@@ -266,7 +266,7 @@ function render() {
 
 function selectModality(modality) {
   state.modality = modality;
-  state.service = modality === 'in_person' ? 'effix' : 'diagnostico';
+  state.service = modality === 'in_person' ? 'effix' : 'evaluate';
   state.date = modality === 'in_person' ? inPersonDateKeys[0] : (virtualDateKeys()[0] ?? '');
   state.slot = null;
   state.advisor = '';
